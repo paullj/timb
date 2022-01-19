@@ -1,9 +1,30 @@
+<script context="module">
+  export const prerender = true;
+</script>
 
 <div class="container">
   <p>
     create music in 64 bytes. heavily inspired by 
     <a href="https://tixy.land">tixy.land</a>
   </p>
+
+  <hr>
+
+  <h1>to-do list</h1>
+  <li>make -ve numbers a different synth</li>
+  <ul>
+    <li>make 0 is a click/drum for rhythms</li>
+    <li>style the volume slider better</li>
+    <li>improve visualiser, its quite boring</li>
+    <ul>
+      <li>better easing function to make changes in low freq more pronounced</li>
+      <li>change color between red and white for -ve numbers (need diff instrument)</li>
+      <li>reimplement distance thingy?</li>
+    </ul>
+    <li>add more examples</li>
+  </ul>
+  
+  <hr>
 
   <div>
     <h1>
@@ -21,19 +42,25 @@
   <p>
     for example, the 13th century persian rhythm 'khafif-e-ramal' below can be generated using r(2,5). coincidentally it is also the metric pattern from dave brubeck's take five and gustav holst's mars from the planets
   </p>
-  <pre>
+  <p>
     r(2,5)=[1,0,0,0] or |x...| in beat notation
-  </pre>
-    
+  </p>
+  <p>
+    other examples: 
+  </p>
   <pre>
-  other examples: 
-  r(1,4) |x...| // simple example
-  r(3,7) |x.x.x..| // bulgarian folk rhythm 'ruchenitza'. used in pink floyd's money
-  r(3,8) |x . . x . . x .| // cuban tresillo pattern 
-  r(5,8) |x . x x . x x .| // spanish tango when started on second offset 
-  r(5,9) [x . x . x . x . x] // arabic rhythm 'agsag-samai' and s. african drum pattern 'venda'
-  r(5,16) x . . x . . x . . x . . x . . . .] is the Bossa-Nova rhythm necklace of Brazil
-  ... and many more
+  simple example
+    r(1,4) |x...| 
+  bulgarian folk rhythm 'ruchenitza'. used in pink floyd's money
+    r(3,7) |x.x.x..| 
+  cuban tresillo pattern 
+    r(3,8) |x . . x . . x .| 
+  spanish tango when started on second offset 
+    r(5,8) |x . x x . x x .| 
+  arabic rhythm 'agsag-samai' and s. african drum pattern 'venda'
+    r(5,9) [x . x . x . x . x] 
+  bossa-Nova rhythm necklace of Brazil
+    r(5,16) x . . x . . x . . x . . x . . . .] 
   </pre>
   you can read more about it <a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf">here</a>
 </div>
@@ -41,12 +68,10 @@
 <style>
   .container {
     width: 64ch;
+    padding-bottom: 200px;;
   }
   h1 {
     font-size: 14px;
     color: red;
-  }
-  a {
-    color:red
   }
 </style>
