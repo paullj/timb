@@ -40,7 +40,7 @@ const examples = [
       "NaN, undefined and other non number values are rest notes",
       "this allows for coding intesting rhythms",
     ],
-    code: "440 * [2,1,NaN,1][i % 4]",
+    code: "440 * [2, 1, NaN, 1][i % 4]",
   },
   {
     comments: [
@@ -54,7 +54,7 @@ const examples = [
       "`f(b,i)` gives you `i` semitones from base frequency `b`",
       "this is useful for making western tonal music (440Hz is a4)",
     ],
-    code: "[0, 3, 5, 7].map( n => f(440, n))[b % 4]",
+    code: "[0, 3, 5, 7].map(n => f(440, n))[b % 4]",
   },
   {
     comments: [
