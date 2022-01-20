@@ -61,14 +61,14 @@ const examples = [
       "`r(o,t)` gives indexes for euclidean rhythm patterns",
       "EXPLAIN THIS BETTER goto /about for more",
     ],
-    code: "[NaN,0][r(3,8)[b]]",
+    code: "[-50,0][r(3,8)[b]]",
   },
   {
     comments: [
       "`Math` functions are available in scope",
       "more room for creativity WRITE SOMETHING INTERESTING",
     ],
-    code: "440+110*sin(t)+220*cos(2*t)",
+    code: "110*sin(t)+220*cos(2*t)",
   },
   {
     comments: [
