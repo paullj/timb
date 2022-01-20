@@ -192,25 +192,6 @@
 </form>
 
 <style>
-  button {
-    background: transparent;
-    font: inherit;
-    color: inherit;
-    border: none;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-  }
-  button svg {
-    width: 100%;
-    height: 100%;
-  }
-  button:hover {
-    color: red;
-  }
-  .mute-button.active{
-    color: red;
-  }
   .editor {
     margin-top: 150px;
       display: block;
