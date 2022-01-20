@@ -33,7 +33,7 @@ const examples = [
   },
   {
     comments: ["`t` is for time", "and `i` is index (0-63)"],
-    code: "440 + t * [0, 1, 2, 1][i % 4]",
+    code: "20 * (t % 100) * [0, 1, 2, 1][i % 4]",
   },
   {
     comments: [
@@ -80,9 +80,9 @@ const examples = [
   {
     comments: [
       "you are limited to 64 bytes, use creative ways to shorten",
-      "eg. `b^0` is equivalent to `b!=0` (every byte counts)!",
+      "eg. `b^0` is equivalent to `b!=0`, every byte counts!",
     ],
-    code: "b^0 ? 440:-220",
+    code: "b^0?440:-220",
   },
   {
     comments: ["now its your turn", "have fun!"],
