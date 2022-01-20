@@ -13,6 +13,7 @@
   let measure = 0;
   let beat = 0;
   
+  let hasStarted = false;
   let isPlaying = false;
   let mute = false;
   let volume = 0.2;
@@ -66,10 +67,12 @@
     squareSynth.connect(Tone.getDestination());
     clickSampler.connect(Tone.getDestination());
     
+    time = Tone.now();
+
     Tone.Transport.scheduleRepeat((t) => {
+      time = t;
       let notes = getFrequencies(t, measure * BEATS_PER_MEASURE + beat, measure, beat);
       if(Array.isArray(notes)) {
-        notes = notes.splice(0,4).map(n => Number.parseFloat(n)).filter(n => n !== null && !Number.isNaN(n));
         notes.forEach(n => {
           if(n === 0)
             clickSampler.triggerAttackRelease("C3", "16n")
@@ -84,14 +87,6 @@
       measure = (measure + Math.floor((beat + 1) / BEATS_PER_MEASURE)) % TOTAL_MEASURES;
       beat = (beat + 1) % BEATS_PER_MEASURE;
     }, "8n");
-
-		let id = requestAnimationFrame(update);
-
-		function update() {
-			id = requestAnimationFrame(update);
-      time = Tone.now();
-		}
-		return () => cancelAnimationFrame(id);
 	})
 
   let exampleIndex = 0;
@@ -105,7 +100,7 @@
 			getFrequencies = new Function('t', 'i', 'm', 'b', `
 			try { 
         with (Math)
-          return [${code}].flat()
+          return [${code}].flat().splice(0,4).map(n => Number.parseFloat(n)).filter(n => n != null && !Number.isNaN(n));
 			} catch(error){
 				return [0];
 			}`);
@@ -134,8 +129,11 @@
 
 <form>
   <button on:click|preventDefault={async () => {
-    await Tone.start();
-	  console.log('audio is ready');
+    if(!hasStarted) {
+      await Tone.start();
+      hasStarted = true;
+      console.log('Audio is ready!');
+    }
     isPlaying = Tone.Transport.toggle().state === 'started'
   }}>
     {#if isPlaying}
@@ -162,16 +160,15 @@
       {@const current = measure * BEATS_PER_MEASURE + beat}
       {@const offset = m * BEATS_PER_MEASURE + b}
       {@const frequencies = getFrequencies(time+offset*0.25, offset, m, b).sort((a,b)=>b-a)}
-  
       <div class="beat" class:indicator={current === offset}>
         {#each { length: frequencies.length || 0 } as _, f}
-          {#if frequencies[f] === null || Number.isNaN(frequencies[f])}
-            <div class="note rest"></div>
-          {:else}
+          {#if frequencies[f] != null && !Number.isNaN(frequencies[f])}
             <div class="note" class:overlay={f > 0} 
               class:click={frequencies[f] === 0}
               class:triangle={frequencies[f] < 0}
               style="--index:{f}; --scale:{scale(frequencies[f], current-offset)};"/>
+          {:else}
+            <div class="note rest"></div>
           {/if}
         {/each}
       </div>
