@@ -1,5 +1,5 @@
 <script context="module">
-  export const prerender = true;
+	export const prerender = true;
 </script>
 
 <div class="container">
@@ -11,10 +11,7 @@
   <hr>
 
   <h1>to-do list</h1>
-  <li>make -ve numbers a different synth</li>
   <ul>
-    <li>make 0 is a click/drum for rhythms</li>
-    <li>style the volume slider better</li>
     <li>improve visualiser, its quite boring</li>
     <ul>
       <li>better easing function to make changes in low freq more pronounced</li>

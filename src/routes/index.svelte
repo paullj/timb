@@ -2,10 +2,8 @@
   import { onMount } from 'svelte';
   import * as Tone from 'tone';
   import { circIn } from 'svelte/easing';
-  
-  import examples from './_examples';
+  import { base } from '$app/paths';  import examples from './_examples';
 
-  const MIN_FREQ = 20;
   const MAX_FREQ = 20000;
   const BEATS_PER_MEASURE = 8;
   const TOTAL_MEASURES = 8;
@@ -24,7 +22,6 @@
     code = examples[exampleIndex].code;
     comments = examples[exampleIndex].comments ?? [];
   }
-  let synth;
 
 	onMount(() => {
     loadFromURL();
@@ -44,21 +41,43 @@
 
     Tone.getDestination().volume.set({ value: Tone.gainToDb(volume) });
     
-    synth = new Tone.PolySynth().toDestination();
-    synth.set({ envelope: { attack: 0.1, decay: 0.5 } });
-    synth.connect(Tone.getDestination());
+    const sineSynth = new Tone.PolySynth();
+    const squareSynth = new Tone.PolySynth();
+    const clickSampler = new Tone.Sampler({
+      urls: {
+        "C3": "click.mp3",
+      },
+      release: 1,
+      baseUrl: base,
+    });
+    
+    squareSynth.set({
+      oscillator: { type: "sine"},
+      envelope: { attack: 0.2, decay: 0.5, release: 1 }
+    });
+    squareSynth.set({
+      detune: 0.1,
+      volume: Tone.gainToDb(0.5),
+      oscillator: { type: "square"},
+      envelope: { attack: 0.05, decay: 0.1 }
+    });
+    sineSynth.connect(Tone.getDestination());
+    squareSynth.connect(Tone.getDestination());
+    clickSampler.connect(Tone.getDestination());
     
     Tone.Transport.scheduleRepeat((t) => {
       let notes = getFrequencies(t, measure * BEATS_PER_MEASURE + beat, measure, beat);
       if(Array.isArray(notes)) {
-        notes = notes.splice(0,4).map(n => clamp(Number.parseFloat(n), MIN_FREQ, MAX_FREQ)).filter(n=>!Number.isNaN(n));
-        if(notes.length)
-          synth.triggerAttackRelease(notes, "8n"); 
-      } else {
-        let note = Number.parseFloat(notes);
-        if(!Number.isNaN(note)) {
-          synth.triggerAttackRelease(clamp(note, MIN_FREQ, MAX_FREQ), "8n"); 
-        }
+        notes = notes.splice(0,4).map(n => Number.parseFloat(n)).filter(n => n !== null && !Number.isNaN(n));
+        notes.forEach(n => {
+          if(n === 0)
+            clickSampler.triggerAttackRelease("C3", "16n")
+          else if(n > 0) {
+            sineSynth.triggerAttackRelease(clamp(n,1,MAX_FREQ), "8n"); 
+          } else {
+            squareSynth.triggerAttackRelease(clamp(Math.abs(n),1,MAX_FREQ), "8n"); 
+          }
+        });
       }
 
       measure = (measure + Math.floor((beat + 1) / BEATS_PER_MEASURE)) % TOTAL_MEASURES;
@@ -92,19 +111,6 @@
 		} catch(error) {
 			getFrequencies = () => [0];
 		}
-	}
-  const test = Array(TOTAL_MEASURES).fill().map((_,m) => Array(BEATS_PER_MEASURE).fill().map((_,b) => 
-    Math.sqrt(((BEATS_PER_MEASURE-b)/BEATS_PER_MEASURE)**2 + ((TOTAL_MEASURES-m)/TOTAL_MEASURES)**2)));
-
-	function scale(freq, dm, db) {
-    // const isNaN = freq == null || Number.isNaN(freq);
-		// freq = clamp((MAX_FREQ-freq)/(MAX_FREQ-MIN_FREQ),0,1);
-    // freq = isNaN ? 1 : 1-Math.E ** (-freq*5); 
-    // const dist = test[Math.abs(dm)][Math.abs(db)] / 2;
-    
-		// return freq;
-    // return 1-Math.E **(-((MAX_FREQ-freq)/(MAX_FREQ-MIN_FREQ))*5);
-    return circIn(1-(freq-MIN_FREQ) / (MAX_FREQ-MIN_FREQ));
 	}
 
   function clamp (value, min, max){
@@ -155,14 +161,13 @@
             <div class="note rest"></div>
           {:else}
             <div class="note" class:overlay={f > 0} 
-              style="--index:{f}; --scale:{scale(frequencies[f])};"/>
+              class:click={frequencies[f] === 0}
+              class:triangle={frequencies[f] < 0}
+              style="--index:{f}; --scale:{circIn(Math.abs(1-frequencies[f]/MAX_FREQ))};"/>
           {/if}
-          <!-- scale(frequencies[f],m-measure,b-beat) -->
-            <!--  style={styleFromValue(frequencies, m-measure, b-beat)} -->
         {/each}
       </div>
 	  {/each}
-    <div></div>
 	{/each}
 </div>
 
@@ -226,7 +231,7 @@
   .container {
     cursor: pointer;
 		display: grid;
-		grid-template-columns: repeat(calc(var(--beats)), auto) 10px repeat(calc(var(--beats)), auto) 0px;
+		grid-template-columns: repeat(calc(2 * var(--beats)), auto);
 		grid-template-rows: repeat(var(--measures), auto);
 		margin: 20px 0px;
     width: auto;
@@ -250,17 +255,23 @@
     z-index: 10;
     transform: scale(var(--scale));
   }
+  .indicator > .note {
+    border-width: 5px; 
+    background: transparent;
+  }
   .note.overlay {
     z-index: calc(10 - var(--index));
     background: white;
     margin: calc(var(--index) * 5px);
-    opacity: 0.35;
+    opacity: 0.65;
   }
-  .indicator > .note {
-    /* background-color: red; */
-    /* border-color: #ff0000; */
-    border-width: 5px; 
-    background: transparent;
+  .note.triangle {
+    background-color: red;
+    border-color: red;
+  }
+  .note.click {
+    background-color:blue;
+    border-color: blue;
   }
   .note.rest {
     /* --scale: 0.8; */

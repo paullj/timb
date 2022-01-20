@@ -1,17 +1,28 @@
 const examples = [
   {
     comments: [
-      "timb(re) - THINK OF A NICE ONE LINE DESC",
+      "timb(re) - musical creative coding",
       "click play and then on the dots above to see/hear more!",
     ],
-    code: "[[0,4,7,9].map(n=>f(220,n))[m%2+b%3],[55,69][r(1,5)[i%5]]]",
+    code: "[[0,4,7,9].map(n=>f(220,n))[m%2+b%3],-[55,69][r(1,5)[i%5]]]",
   },
   {
     comments: [
       "each dot is a beat, to play a note",
-      "return a frequency from 20-20000 hz",
+      "return a frequency from 1 to 20000 hz",
     ],
     code: "440",
+  },
+  {
+    comments: [
+      "frequencies > 0 use a sine wave",
+      "while negative frequencies use a square wave",
+    ],
+    code: "-440",
+  },
+  {
+    comments: ["return 0 for a click", "this can be useful for drum rhythms"],
+    code: "0",
   },
   {
     comments: [
@@ -21,7 +32,7 @@ const examples = [
     code: "(1+m%2)*110*[1,2,3,4][b%4]",
   },
   {
-    comments: ["`t` is time", "and `i` is index (0-63)"],
+    comments: ["`t` is for time", "and `i` is index (0-63)"],
     code: "440+t*[0,1,2,1][i%4]",
   },
   {
@@ -34,14 +45,14 @@ const examples = [
   {
     comments: [
       "returning an array plays all frequencies as a chord",
-      "there is max polyphony of 4",
+      "you can play a maximum of 4 notes at the same time",
     ],
     code: "[[440,220,110],[220,110,880]][m%2]",
   },
   {
     comments: [
       "`f(b,i)` gives you `i` semitones from base frequency `b`",
-      "440Hz is A4. MAKE THIS BETTER",
+      "nb. 440Hz is a4. MAKE THIS A BETTER MSG",
     ],
     code: "[0,3,5,7].map(n=>f(440,n))[b%4]",
   },
@@ -50,7 +61,7 @@ const examples = [
       "`r(o,t)` gives indexes for euclidean rhythm patterns",
       "EXPLAIN THIS BETTER goto /about for more",
     ],
-    code: "[NaN,440][r(3,8)[b]]",
+    code: "[NaN,0][r(3,8)[b]]",
   },
   {
     comments: [
