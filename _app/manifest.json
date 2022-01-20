@@ -1,10 +1,11 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "start-e7c50c65.js",
+    "file": "start-61f2d3a4.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
-      "_vendor-548d835b.js"
+      "_vendor-be97d11c.js",
+      "_paths-4b3c6e7e.js"
     ],
     "dynamicImports": [
       "src/routes/__layout.svelte",
@@ -14,51 +15,55 @@
     ]
   },
   "src/routes/__layout.svelte": {
-    "file": "pages/__layout.svelte-51a6f36f.js",
+    "file": "pages/__layout.svelte-56bf24eb.js",
     "src": "src/routes/__layout.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-548d835b.js"
+      "_vendor-be97d11c.js"
     ],
     "css": [
       "assets/pages/__layout.svelte-7484c209.css"
     ]
   },
   ".svelte-kit/runtime/components/error.svelte": {
-    "file": "error.svelte-8e1fb5cf.js",
+    "file": "error.svelte-9b209d34.js",
     "src": ".svelte-kit/runtime/components/error.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-548d835b.js"
+      "_vendor-be97d11c.js"
     ]
   },
   "src/routes/index.svelte": {
-    "file": "pages/index.svelte-4fba62f7.js",
+    "file": "pages/index.svelte-391d95e6.js",
     "src": "src/routes/index.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-548d835b.js"
+      "_vendor-be97d11c.js",
+      "_paths-4b3c6e7e.js"
     ],
     "css": [
-      "assets/pages/index.svelte-40fc0fd6.css"
+      "assets/pages/index.svelte-9fd19022.css"
     ]
   },
   "src/routes/about.svelte": {
-    "file": "pages/about.svelte-30de1731.js",
+    "file": "pages/about.svelte-4eb61a29.js",
     "src": "src/routes/about.svelte",
     "isEntry": true,
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-548d835b.js"
+      "_vendor-be97d11c.js"
     ],
     "css": [
       "assets/pages/about.svelte-3729a80f.css"
     ]
   },
-  "_vendor-548d835b.js": {
-    "file": "chunks/vendor-548d835b.js"
+  "_vendor-be97d11c.js": {
+    "file": "chunks/vendor-be97d11c.js"
+  },
+  "_paths-4b3c6e7e.js": {
+    "file": "chunks/paths-4b3c6e7e.js"
   }
 }
