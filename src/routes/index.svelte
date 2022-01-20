@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import * as Tone from 'tone';
   import { expoOut, expoIn } from 'svelte/easing';
-  import examples from './_examples';
+  import examples from '$lib/examples';
   import { base } from '$app/paths';
 
   const MAX_FREQ = 10000;

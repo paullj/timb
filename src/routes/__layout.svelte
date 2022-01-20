@@ -1,12 +1,13 @@
 <script>
-  import './index.css';
+  import './layout.css';
 
   let taglines = [
     "musical code golf",
     "musical creative coding",
     "minimal music",
     "tiny tunes",
-    "64 byte beats",
+    "64 byte beats",,
+    "♪ ♫",
     "code your next masterpiece"
   ]
 </script>
