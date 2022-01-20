@@ -6,7 +6,7 @@
     "musical creative coding",
     "minimal music",
     "tiny tunes",
-    "64 byte beats",,
+    "64 byte beats",
     "♪ ♫",
     "code your next masterpiece"
   ]

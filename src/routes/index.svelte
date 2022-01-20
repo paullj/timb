@@ -181,7 +181,7 @@
 
 <form class="editor" on:submit|preventDefault={()=>{ saveToURL() }}>
   <label for="code" class="comment focused">// hit `enter` to save your code in the URL</label>
-  <label for="code" class="comment focused">// to learn more click on the dots above or <a href="/about">here</a></label>
+  <label for="code" class="comment focused">// to learn more click on the dots above or <a href="{base}about">here</a></label>
   {#each comments as line}
     <label for="code" class="comment">// {line}</label>
   {/each}

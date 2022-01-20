@@ -10,19 +10,6 @@
 
   <hr>
 
-  <h1>to-do list</h1>
-  <ul>
-    <li>improve visualiser, its quite boring</li>
-    <ul>
-      <li>better easing function to make changes in low freq more pronounced</li>
-      <li>change color between red and white for -ve numbers (need diff instrument)</li>
-      <li>reimplement distance thingy?</li>
-    </ul>
-    <li>add more examples</li>
-  </ul>
-  
-  <hr>
-
   <div>
     <h1>
       // what does `f(b,i)` do?
