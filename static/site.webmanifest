@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "timb(re)",
+    "short_name": "timb",
     "icons": [
        {
           "src": "/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
         "type": "image/png"
         }
     ],
-    "theme_color": "#FFFFFF",
-    "background_color": "#FFFFFF",
+    "theme_color": "#FF0000",
+    "background_color": "#000",
     "display": "standalone"
  }
