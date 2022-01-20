@@ -14,7 +14,7 @@
   
   let isPlaying = false;
   let mute = false;
-  let volume = 0.1;
+  let volume = 0.2;
   
   $: Tone.getDestination().mute = mute;
   $: Tone.getDestination()?.volume?.rampTo(Tone.gainToDb(volume), 0.05);
@@ -57,7 +57,7 @@
     });
     squareSynth.set({
       detune: 0.1,
-      volume: Tone.gainToDb(0.5),
+      volume: Tone.gainToDb(0.2),
       oscillator: { type: "square"},
       envelope: { attack: 0.05, decay: 0.1 }
     });
@@ -145,7 +145,7 @@
       <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M3.5 10.494l.257-.429-.119-.07H3.5v.5zm0-5.996v.5h.138l.12-.071-.258-.429zm5-2.998H9a.5.5 0 00-.757-.429L8.5 1.5zm0 11.992l-.257.429A.5.5 0 009 13.492h-.5zm-5-3.498h-2v1h2v-1zm-2 0a.5.5 0 01-.5-.5H0c0 .83.672 1.5 1.5 1.5v-1zm-.5-.5V5.498H0v3.998h1zm0-3.997a.5.5 0 01.5-.499v-1a1.5 1.5 0 00-1.5 1.5h1zm.5-.499h2v-1h-2v1zm2.257-.071l5-2.998-.514-.858-5 2.998.514.858zM8 1.5v11.992h1V1.5H8zm.757 11.563l-5-2.998-.514.858 5 2.998.514-.858zM10 6v3h1V6h-1z" fill="currentColor"></path></svg>
     {/if}
   </button>
-  <input type="range" name="" step="0.05" min=0.0 max=1.0 bind:value={volume} disabled={mute} id="">
+  <input type="range" name="" step="0.1" min=0.0 max=1.0 bind:value={volume} disabled={mute} id="">
 </form>
 
 <div class="container" style="--beats: {BEATS_PER_MEASURE}; --meausures: {TOTAL_MEASURES}" on:click={() => exampleIndex = (exampleIndex + 1) % examples.length}>
@@ -172,14 +172,15 @@
 </div>
 
 <form class="editor" on:submit|preventDefault={()=>{ saveToURL() }}>
+  <label for="code" class="comment focused">// hit `enter` to save your code in the URL</label>
+  <label for="code" class="comment focused">// to learn more click on the dots above or <a href="/about">here</a></label>
   {#each comments as line}
     <label for="code" class="comment">// {line}</label>
   {/each}
-  <label for="code" class="comment focused">// hit `enter` to save your tune in the URL</label>
-  <label for="code" class="comment focused">// to learn more about what you can do click here</label>
+  
+  <label id="label" for="code">(t,i,m,b) =&gt;</label>
+  <input id="input" name="code" type="text" spellcheck="false" autocomplete="off" bind:value={code} maxlength="64"/>  
 
-  <label id="label" for="input">(t,i,m,b) =&gt;</label>
-  <input id="input" name="code" type="text" spellcheck="false" autocomplete="off" bind:value={code} />  
 </form>
 
 <style>
@@ -203,8 +204,9 @@
     color: red;
   }
   .editor {
+    margin-top: 150px;
       display: block;
-      line-height: 1.2em;
+      line-height: 1.4em;
       background: transparent;
   }
   .editor > label {
@@ -212,21 +214,27 @@
       font: inherit;
   }
   .editor > label.comment {
-      color: red;
+    color: red;
+    display: block;
   }
-  .editor > label.comment.focused{
-    display:none
+  .editor > label.comment.focused {
+    display: none;
   }
-
+  .editor:focus-within > label.comment.focused{
+    display: block;
+  }
+ .editor:focus-within > label.comment{
+    display: none;
+  }
   .editor > input {
-      background: transparent;
-      font: inherit;
-      color: inherit;
-      border: none;
-      width: 64ch;
-      box-sizing: content-box;
-      border: 0;
-      outline: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    border: none;
+    width: 64ch;
+    box-sizing: content-box;
+    border: 0;
+    outline: 0;
   }
   .container {
     cursor: pointer;
@@ -274,7 +282,6 @@
     border-color: blue;
   }
   .note.rest {
-    /* --scale: 0.8; */
     border-width: 0px;
     background: transparent;
   }

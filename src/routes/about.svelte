@@ -56,7 +56,7 @@
     r(5,8) |x . x x . x x .| 
   arabic rhythm 'agsag-samai' and s. african drum pattern 'venda'
     r(5,9) [x . x . x . x . x] 
-  bossa-Nova rhythm necklace of Brazil
+  bossa-nova rhythm necklace of Brazil
     r(5,16) x . . x . . x . . x . . x . . . .] 
   </pre>
   you can read more about it <a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf">here</a>

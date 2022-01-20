@@ -2,7 +2,7 @@ const examples = [
   {
     comments: [
       "timb(re) - musical creative coding",
-      "click play and then on the dots above to see/hear more!",
+      "click play and then on the dots above to hear more!",
     ],
     code: "[[0,4,7,9].map(n=>f(220,n))[m%2+b%3],-[55,69][r(1,5)[i%5]]]",
   },
