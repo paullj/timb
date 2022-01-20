@@ -1,10 +1,11 @@
 <script>
   import { onMount } from 'svelte';
   import * as Tone from 'tone';
-  import { circIn } from 'svelte/easing';
-  import { base } from '$app/paths';  import examples from './_examples';
+  import { expoOut, expoIn } from 'svelte/easing';
+  import examples from './_examples';
+  import { base } from '$app/paths';
 
-  const MAX_FREQ = 20000;
+  const MAX_FREQ = 10000;
   const BEATS_PER_MEASURE = 8;
   const TOTAL_MEASURES = 8;
 
@@ -45,7 +46,7 @@
     const squareSynth = new Tone.PolySynth();
     const clickSampler = new Tone.Sampler({
       urls: {
-        "C3": "click.mp3",
+        "C3": "/click.mp3",
       },
       release: 1,
       baseUrl: base,
@@ -122,6 +123,13 @@
     if(location.hash)
       code = decodeURIComponent(location.hash.slice(1));
   }
+  const scale = (x, o) => {
+    const indicatorScale = Math.abs(o/(TOTAL_MEASURES*BEATS_PER_MEASURE));
+    if(x === 0)
+      return 1.25-0.75*expoOut(indicatorScale)
+
+    return expoIn(1-Math.abs(x / MAX_FREQ)) * (1-indicatorScale/2);
+  }
 </script>
 
 <form>
@@ -153,7 +161,7 @@
     {#each { length: BEATS_PER_MEASURE } as _, b}
       {@const current = measure * BEATS_PER_MEASURE + beat}
       {@const offset = m * BEATS_PER_MEASURE + b}
-      {@const frequencies = getFrequencies(time, offset, m, b).sort((a,b)=>b-a)}
+      {@const frequencies = getFrequencies(time+offset*0.25, offset, m, b).sort((a,b)=>b-a)}
   
       <div class="beat" class:indicator={current === offset}>
         {#each { length: frequencies.length || 0 } as _, f}
@@ -163,7 +171,7 @@
             <div class="note" class:overlay={f > 0} 
               class:click={frequencies[f] === 0}
               class:triangle={frequencies[f] < 0}
-              style="--index:{f}; --scale:{circIn(Math.abs(1-frequencies[f]/MAX_FREQ))};"/>
+              style="--index:{f}; --scale:{scale(frequencies[f], current-offset)};"/>
           {/if}
         {/each}
       </div>
@@ -217,6 +225,10 @@
     color: red;
     display: block;
   }
+  .editor > label.comment::selection {
+    background: red;
+    color: black;
+  }
   .editor > label.comment.focused {
     display: none;
   }
@@ -252,8 +264,8 @@
   }
   .note {
     position: absolute;
-    width: 90%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
     top: 0px;
     left: 0px;
     border-radius: 50%;
@@ -262,16 +274,15 @@
     box-sizing: border-box;
     z-index: 10;
     transform: scale(var(--scale));
-  }
-  .indicator > .note {
-    border-width: 5px; 
-    background: transparent;
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
   }
   .note.overlay {
     z-index: calc(10 - var(--index));
     background: white;
     margin: calc(var(--index) * 5px);
-    opacity: 0.65;
+    opacity: 0.5;
   }
   .note.triangle {
     background-color: red;
@@ -281,7 +292,20 @@
     background-color:blue;
     border-color: blue;
   }
+  .note.triangle.overlay,
+  .note.click.overlay {
+    opacity: 0.85;
+  }
+  .note.triangle.overlay + .note.triangle.overlay,
+  .note.click.overlay + .note.click.overlay{
+    opacity: 0.3;
+  }
+  .indicator > .note:not(.overlay) {
+    border-width: 5px; 
+    background: transparent;
+  }
   .note.rest {
+    display: none;
     border-width: 0px;
     background: transparent;
   }

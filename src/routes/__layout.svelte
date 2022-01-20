@@ -1,5 +1,14 @@
 <script>
   import './index.css';
+
+  let taglines = [
+    "musical code golf",
+    "musical creative coding",
+    "minimal music",
+    "tiny tunes",
+    "64 byte beats",
+    "code your next masterpiece"
+  ]
 </script>
 
 <div class="container">
@@ -15,7 +24,7 @@
 
 <head>
   <title>
-    timb(re)
+    timb(re) - {taglines[Math.floor(Math.random()*taglines.length)]}
   </title>
 </head>
 

@@ -18,3 +18,8 @@ body {
 a {
   color: red;
 }
+
+::selection {
+  background: white;
+  color: black;
+}

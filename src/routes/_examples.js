@@ -4,18 +4,18 @@ const examples = [
       "timb(re) - musical creative coding",
       "click play and then on the dots above to hear more!",
     ],
-    code: "[[0,4,7,9].map(n=>f(220,n))[m%2+b%3],-[55,69][r(1,5)[i%5]]]",
+    code: "[[0,4,7,9].map(n=>f(220,n))[m%2+b%3],-110*(1+m%2),r(5,8)[b]-1]",
   },
   {
     comments: [
       "each dot is a beat, to play a note",
-      "return a frequency from 1 to 20000 hz",
+      "return a frequency from 1 to 10000 hz",
     ],
     code: "440",
   },
   {
     comments: [
-      "frequencies > 0 use a sine wave",
+      "frequencies greater than 0 use a sine wave",
       "while negative frequencies use a square wave",
     ],
     code: "-440",
@@ -40,14 +40,14 @@ const examples = [
       "NaN and other non number values are rest notes",
       "this allows for intesting rhythms",
     ],
-    code: "440*[2,1,1,NaN,1,1,NaN,1][i%8]",
+    code: "440*[2,NaN,1,NaN,1,NaN,1,NaN][i%8]",
   },
   {
     comments: [
       "returning an array plays all frequencies as a chord",
       "you can play a maximum of 4 notes at the same time",
     ],
-    code: "[[440,220,110],[220,110,880]][m%2]",
+    code: "[NaN,[440,220,110],[220,110,880]][i%2*(1+m%2)]",
   },
   {
     comments: [
