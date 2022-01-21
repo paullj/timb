@@ -4,10 +4,12 @@
   import { expoOut, expoIn } from 'svelte/easing';
   import examples from '$lib/examples';
   import { base } from '$app/paths';
+  import { page } from '$app/stores'
 
   const MAX_FREQ = 10000;
-  const BEATS_PER_MEASURE = 8;
-  const TOTAL_MEASURES = 8;
+
+  let beatsPerMeasure = 8;
+  let totalMeasures = 8;
 
   let time = 0;
   let measure = 0;
@@ -41,7 +43,7 @@
       }
       return pattern;
     }
-
+    
     Tone.getDestination().volume.set({ value: Tone.gainToDb(gain) });
     
     const sineSynth = new Tone.PolySynth();
@@ -72,7 +74,7 @@
 
     Tone.Transport.scheduleRepeat((t) => {
       time = t;
-      let notes = getFrequencies(t, measure * BEATS_PER_MEASURE + beat, measure, beat);
+      let notes = getFrequencies(t, measure * beatsPerMeasure + beat, measure, beat);
       if(Array.isArray(notes)) {
         notes.forEach(n => {
           if(n === 0)
@@ -85,8 +87,8 @@
         });
       }
 
-      measure = (measure + Math.floor((beat + 1) / BEATS_PER_MEASURE)) % TOTAL_MEASURES;
-      beat = (beat + 1) % BEATS_PER_MEASURE;
+      measure = (measure + Math.floor((beat + 1) / beatsPerMeasure)) % totalMeasures;
+      beat = (beat + 1) % beatsPerMeasure;
     }, "8n");
 	})
 
@@ -113,13 +115,21 @@
     return Math.min(Math.max(value, min), max);
   }
 
-  const saveToURL = () => history.pushState(null, '', `#${encodeURIComponent(code)}`);
+  const saveToURL = () =>{
+    let query = new URLSearchParams($page.url.searchParams.toString());
+    query.set("code", code);
+    history.pushState(null, '', `?${query.toString()}`);
+    
+  }
+
   const loadFromURL = () => {
-    if(location.hash)
-      code = decodeURIComponent(location.hash.slice(1));
+    if($page.url.searchParams.has("code"))
+      code = $page.url.searchParams.get("code");
+    if($page.url.searchParams.has("bpm")) 
+      Tone.Transport.bpm.value = clamp($page.url.searchParams.get("bpm"), 1, 500);
   }
   const scale = (x, o) => {
-    const indicatorScale = Math.abs(o/(TOTAL_MEASURES*BEATS_PER_MEASURE));
+    const indicatorScale = Math.abs(o/(totalMeasures*beatsPerMeasure));
     return x === 0 ? 
       (2-expoOut(indicatorScale)**2)/1.75 :
       expoIn(1-Math.abs(x / MAX_FREQ)) * (1-indicatorScale/2);
@@ -141,7 +151,7 @@
       play
     {/if}
   </button>
-  <button disabled={measure+beat === 0} on:click|preventDefault={async () => {
+  <button disabled={measure+beat === 0 && !isPlaying} on:click|preventDefault={async () => {
     Tone.Transport.stop();
     isPlaying = false;
     measure = beat = 0;
@@ -156,11 +166,11 @@
   </button>
 </form>
 
-<div class="container" style="--beats: {BEATS_PER_MEASURE}; --meausures: {TOTAL_MEASURES}" on:click={() => exampleIndex = (exampleIndex + 1) % examples.length}>
-  {#each { length: TOTAL_MEASURES } as _, m}
-    {#each { length: BEATS_PER_MEASURE } as _, b}
-      {@const current = measure * BEATS_PER_MEASURE + beat}
-      {@const offset = m * BEATS_PER_MEASURE + b}
+<div class="container" style="--beats: {beatsPerMeasure}; --meausures: {totalMeasures}" on:click={() => exampleIndex = (exampleIndex + 1) % examples.length}>
+  {#each { length: totalMeasures } as _, m}
+    {#each { length: beatsPerMeasure } as _, b}
+      {@const current = measure * beatsPerMeasure + beat}
+      {@const offset = m * beatsPerMeasure + b}
       {@const frequencies = getFrequencies(time+offset*0.25, offset, m, b).sort((a,b)=>b-a)}
       <div class="beat" class:indicator={current === offset}>
         {#each { length: frequencies.length || 0 } as _, f}
