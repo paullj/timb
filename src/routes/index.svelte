@@ -19,10 +19,15 @@
   let isPlaying = false;
   let mute = false;
   let volumeLevel = 0;
-
-  $: gain = (volumeLevel+1)/4;
-  $: Tone.getDestination().mute = mute;
-  $: Tone.getDestination()?.volume?.rampTo(Tone.gainToDb(gain, 0.25));
+  
+  let muteTimeout;
+  $: gain = (volumeLevel+1)/8;
+  $: {
+    muteTimeout && clearTimeout(muteTimeout);
+    Tone.getDestination()?.volume?.rampTo(Tone.gainToDb(mute ? 0 : gain), 0.3)
+    muteTimeout = setTimeout(() => Tone.getDestination().mute = mute, 300);
+  }
+  $: Tone.getDestination()?.volume?.rampTo(Tone.gainToDb(gain), 0.3);
   $: {
     code = examples[exampleIndex].code;
     comments = examples[exampleIndex].comments ?? [];
@@ -43,8 +48,6 @@
       }
       return pattern;
     }
-    
-    Tone.getDestination().volume.set({ value: Tone.gainToDb(gain) });
     
     const sineSynth = new Tone.PolySynth();
     const squareSynth = new Tone.PolySynth();
@@ -175,7 +178,7 @@
     {!mute ? "mute" : "unmute"}
   </button>
   <button class="mute-button" class:active={mute} disabled={mute} on:click|preventDefault={() => volumeLevel = (volumeLevel+1)%4}>
-    volume ({gain.toFixed(2)})
+    volume ({(2*gain).toFixed(2)})
   </button>
 </form>
 
@@ -207,7 +210,7 @@
 
 <form class="editor" on:submit|preventDefault={saveToURL}>
   <label for="code" class="comment focus-only">// hit `enter` to save your code in the URL</label>
-  <label for="code" class="comment focus-only">// to learn more click on the dots above or <a href="{base}/about">here</a></label>
+  <label for="code" class="comment focus-only">// click on the dots above or go to <a id="about" href="{base}/about">/about</a> for more info</label>
   {#each comments as line}
     <label for="code" class="comment">// {line}</label>
   {/each}
@@ -301,6 +304,14 @@
   .note.rest {
     display: none;
     border-width: 0px;
-    background: transparent;
+    background: tra
   }
+  #about {
+    color:black;
+    background: red;
+  }
+   #about:hover {
+    color: white;
+    background: blue;
+   }
 </style>

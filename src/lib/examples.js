@@ -4,7 +4,7 @@ const examples = [
       "timb(re) - musical creative coding",
       "click play and then on the dots above to hear more!",
     ],
-    code: "[[0,4,7,9].map(n=>f(220,n))[m%2+b%3],-110*(1+m%2),r(5,8)[b]-1]",
+    code: "[[220,277,330,370][m%2+b%3],55*(r(3,8)[b]-1),110*(1+m%2),1/0]",
   },
   {
     comments: [
@@ -57,7 +57,7 @@ const examples = [
       "`f(b,i)` gives you `i` semitones from base frequency `b`",
       "this is useful for making western tonal music (440Hz is a4)",
     ],
-    code: "[0, 3, 5, 7].map(n => f(440, n))[b % 4]",
+    code: "[0, 4, 7, 4, 2, -2, 5, 4].map(n => f(440, n))[b % 8]",
   },
   {
     comments: [

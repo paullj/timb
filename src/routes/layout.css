@@ -78,7 +78,7 @@ body {
   padding: 0px 10px;
   margin: 0;
   display: grid;
-  align-items: center;
+  /* align-items: center; */
   justify-items: center;
   height: 100vh;
 }

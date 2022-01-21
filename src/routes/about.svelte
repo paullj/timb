@@ -3,16 +3,32 @@
   export const router = false;
 </script>
 
+<h2>
+  // how do i make a sound?
+</h2>
 <p>
-  create music in 64 bytes. heavily inspired by <a href="https://tixy.land">tixy.land</a>
+  return a number or an array of numbers to make a sound. depending on the value of the number returned one of 5 instruments will be played:
 </p>
+<ul>
+  <li>sine wave synth. 1 to 10000</li>
+  <li>square wave synth. 1 to -10000</li>
+  <li>kick drum. 0</li>
+  <li>hi-hat. infinity</li>
+  <li>snare drum. -infinity</li>
+  <li>sine synth. NaN or undefined</li>
+</ul>
 
 <h2>
   // what does `f(b,i)` do?
 </h2>
 <p>
-  `f(b,i)` allows you to write music in semitones, it returns a frequency given a base frequency and how many semitones difference you want
+  `f(b,i)` allows you to write music in semitones, it returns a frequency given a base frequency and how many semitones difference you want.
 </p>
+<p>
+  <a href="https://en.wikipedia.org/wiki/Piano_key_frequencies" rel="opener">here</a> is a useful list of frequencies that correspond to keys on a piano
+</p> 
+
+
 <h2>
   // what about `r(o,p)`?
 </h2>
@@ -53,12 +69,12 @@
   <li>
     arabic rhythm 'agsag-samai' and s. african drum pattern 'venda'
     <br>
-    r(5,9) [x . x . x . x . x]
+    r(5,9) |x . x . x . x . x|
   </li>
   <li>
     bossa-nova rhythm necklace of brazil
     <br>
-    r(5,16) x . . x . . x . . x . . x . . . .] 
+    r(5,16) |x . . x . . x . . x . . x . . . .|
   </li>
 </ul>
 <p>

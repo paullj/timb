@@ -13,31 +13,48 @@
 </script>
 
 <div class="container">
-  <slot/>
+  <div></div>
+  <div>
+    <slot/>
+  </div>
   <footer class="footer">
     made by <a href="https://github.com/paullj">paullj</a>.
-    inspired by <a href="https://tixy.land">tixy.land</a>
+    heavily inspired by <a href="https://tixy.land">tixy.land</a>
   </footer>
 </div>
 
-<head>
+<svelte:head>
   <title>
     timb(re) - {taglines[Math.floor(Math.random()*taglines.length)]}
   </title>
-</head>
+</svelte:head>
 
 <style>
   .container {
     position: relative;
     max-width: 64ch;
     min-height: 100%;
+    display: grid;
+    align-items: center;
+    grid-template-rows: auto 1fr auto;
   }
   .footer {
-    position: fixed;
-    left: 0px;
-    bottom: 0px;
-    width: 100%;;
+    width: 100%;
     text-align: center;
-    padding-bottom: 20px;
+    padding: 20px 0px;
   }
+  a,
+  a::selection {
+    color: red;
+    background: none;
+  }
+  a:active {
+    background: blue;
+    color: white;
+  }
+  a:hover {
+    background: red;
+    color: white;
+  }
+
 </style>
