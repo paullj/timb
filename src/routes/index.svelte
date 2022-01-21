@@ -16,10 +16,11 @@
   let hasStarted = false;
   let isPlaying = false;
   let mute = false;
-  let volume = 0.2;
-  
+  let volumeLevel = 0;
+
+  $: gain = (volumeLevel+1)/4;
   $: Tone.getDestination().mute = mute;
-  $: Tone.getDestination()?.volume?.rampTo(Tone.gainToDb(volume), 0.05);
+  $: Tone.getDestination()?.volume?.rampTo(Tone.gainToDb(gain, 0.25));
   $: {
     code = examples[exampleIndex].code;
     comments = examples[exampleIndex].comments ?? [];
@@ -41,7 +42,7 @@
       return pattern;
     }
 
-    Tone.getDestination().volume.set({ value: Tone.gainToDb(volume) });
+    Tone.getDestination().volume.set({ value: Tone.gainToDb(gain) });
     
     const sineSynth = new Tone.PolySynth();
     const squareSynth = new Tone.PolySynth();
@@ -92,7 +93,6 @@
   let exampleIndex = 0;
   let comments = examples[0].comments;
   let code = examples[0].code;
-	
 
 	let getFrequencies;
   $: {
@@ -120,14 +120,13 @@
   }
   const scale = (x, o) => {
     const indicatorScale = Math.abs(o/(TOTAL_MEASURES*BEATS_PER_MEASURE));
-    if(x === 0)
-      return 1.25-0.75*expoOut(indicatorScale)
-
-    return expoIn(1-Math.abs(x / MAX_FREQ)) * (1-indicatorScale/2);
+    return x === 0 ? 
+      (2-expoOut(indicatorScale)**2)/1.75 :
+      expoIn(1-Math.abs(x / MAX_FREQ)) * (1-indicatorScale/2);
   }
 </script>
 
-<form>
+<form class="controls">
   <button on:click|preventDefault={async () => {
     if(!hasStarted) {
       await Tone.start();
@@ -137,21 +136,24 @@
     isPlaying = Tone.Transport.toggle().state === 'started'
   }}>
     {#if isPlaying}
-      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M5.5 3v9m4-9v9" stroke="currentColor"></path></svg>
+      pause
     {:else}
-      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M4.5 12.5v-10l7 5-7 5z" stroke="currentColor" stroke-linejoin="round"></path></svg>
+      play
     {/if}
+  </button>
+  <button disabled={measure+beat === 0} on:click|preventDefault={async () => {
+    Tone.Transport.stop();
+    isPlaying = false;
+    measure = beat = 0;
+  }}>
+    stop
   </button>
   <button class="mute-button" class:active={mute} on:click|preventDefault={() => mute = !mute}>
-    {#if volume >= 0.65}
-      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M3.5 10.494l.257-.429-.119-.07H3.5v.5zm0-5.996v.5h.138l.12-.071-.258-.429zm5-2.998H9a.5.5 0 00-.757-.429L8.5 1.5zm0 11.992l-.257.429A.5.5 0 009 13.492h-.5zm-5-3.498h-2v1h2v-1zm-2 0a.5.5 0 01-.5-.5H0c0 .83.672 1.5 1.5 1.5v-1zm-.5-.5V5.498H0v3.998h1zm0-3.997a.5.5 0 01.5-.499v-1a1.5 1.5 0 00-1.5 1.5h1zm.5-.499h2v-1h-2v1zm2.257-.071l5-2.998-.514-.858-5 2.998.514.858zM8 1.5v11.992h1V1.5H8zm.757 11.563l-5-2.998-.514.858 5 2.998.514-.858zM10 6v3h1V6h-1zm2-2v7h1V4h-1zm2-2v11h1V2h-1z" fill="currentColor"></path></svg>
-    {:else if volume >= 0.35}
-      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M3.5 10.494l.257-.429-.119-.07H3.5v.5zm0-5.996v.5h.138l.12-.071-.258-.429zm5-2.998H9a.5.5 0 00-.757-.429L8.5 1.5zm0 11.992l-.257.429A.5.5 0 009 13.492h-.5zm-5-3.498h-2v1h2v-1zm-2 0a.5.5 0 01-.5-.5H0c0 .83.672 1.5 1.5 1.5v-1zm-.5-.5V5.498H0v3.998h1zm0-3.997a.5.5 0 01.5-.499v-1a1.5 1.5 0 00-1.5 1.5h1zm.5-.499h2v-1h-2v1zm2.257-.071l5-2.998-.514-.858-5 2.998.514.858zM8 1.5v11.992h1V1.5H8zm.757 11.563l-5-2.998-.514.858 5 2.998.514-.858zM10 6v3h1V6h-1zm2-2v7h1V4h-1z" fill="currentColor"></path></svg>
-    {:else}
-      <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M3.5 10.494l.257-.429-.119-.07H3.5v.5zm0-5.996v.5h.138l.12-.071-.258-.429zm5-2.998H9a.5.5 0 00-.757-.429L8.5 1.5zm0 11.992l-.257.429A.5.5 0 009 13.492h-.5zm-5-3.498h-2v1h2v-1zm-2 0a.5.5 0 01-.5-.5H0c0 .83.672 1.5 1.5 1.5v-1zm-.5-.5V5.498H0v3.998h1zm0-3.997a.5.5 0 01.5-.499v-1a1.5 1.5 0 00-1.5 1.5h1zm.5-.499h2v-1h-2v1zm2.257-.071l5-2.998-.514-.858-5 2.998.514.858zM8 1.5v11.992h1V1.5H8zm.757 11.563l-5-2.998-.514.858 5 2.998.514-.858zM10 6v3h1V6h-1z" fill="currentColor"></path></svg>
-    {/if}
+    {!mute ? "mute" : "unmute"}
   </button>
-  <input type="range" name="" step="0.1" min=0.0 max=1.0 bind:value={volume} disabled={mute} id="">
+  <button class="mute-button" class:active={mute} disabled={mute} on:click|preventDefault={() => volumeLevel = (volumeLevel+1)%4}>
+    volume ({gain.toFixed(2)})
+  </button>
 </form>
 
 <div class="container" style="--beats: {BEATS_PER_MEASURE}; --meausures: {TOTAL_MEASURES}" on:click={() => exampleIndex = (exampleIndex + 1) % examples.length}>
@@ -177,61 +179,48 @@
 </div>
 
 <form class="editor" on:submit|preventDefault={()=>{ saveToURL() }}>
-  <label for="code" class="comment focused">// hit `enter` to save your code in the URL</label>
-  <label for="code" class="comment focused">// to learn more click on the dots above or <a href="{base}/about">here</a></label>
+  <label for="code" class="comment focus-only">// hit `enter` to save your code in the URL</label>
+  <label for="code" class="comment focus-only">// to learn more click on the dots above or <a href="{base}/about">here</a></label>
   {#each comments as line}
     <label for="code" class="comment">// {line}</label>
   {/each}
   
   <label id="label" for="code">(t,i,m,b) =&gt;</label>
-  <input id="input" name="code" type="text" spellcheck="false" autocomplete="off" bind:value={code} maxlength="64"/>  
-
+  <input id="input" name="code" type="text" spellcheck="false" autocomplete="off" bind:value={code} maxlength="64"/>
 </form>
 
 <style>
+  .controls {
+    width: 100%;
+    display: grid;
+    justify-items: left;
+    grid-template-columns: 7ch 7ch 7ch auto;
+  }
   .editor {
     margin-top: 150px;
-      display: block;
-      line-height: 1.4em;
-      background: transparent;
   }
-  .editor > label {
-      display: block;
-      font: inherit;
-  }
-  .editor > label.comment {
+  .comment {
     color: red;
-    display: block;
   }
-  .editor > label.comment::selection {
+  .comment::selection {
     background: red;
     color: black;
   }
-  .editor > label.comment.focused {
+  .comment.focus-only {
     display: none;
   }
-  .editor:focus-within > label.comment.focused{
+  .editor:focus-within > .comment.focus-only{
     display: block;
   }
- .editor:focus-within > label.comment{
+ .editor:focus-within > .comment{
     display: none;
-  }
-  .editor > input {
-    background: transparent;
-    font: inherit;
-    color: inherit;
-    border: none;
-    width: 64ch;
-    box-sizing: content-box;
-    border: 0;
-    outline: 0;
   }
   .container {
     cursor: pointer;
 		display: grid;
 		grid-template-columns: repeat(calc(2 * var(--beats)), auto);
 		grid-template-rows: repeat(var(--measures), auto);
-		margin: 20px 0px;
+		margin: 10px 0px;
     width: auto;
     height: auto;
 	}
@@ -254,7 +243,7 @@
     transform: scale(var(--scale));
     transition-property: transform;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+    transition-duration: 200ms;
   }
   .note.overlay {
     z-index: calc(10 - var(--index));
@@ -287,5 +276,4 @@
     border-width: 0px;
     background: transparent;
   }
-
 </style>
