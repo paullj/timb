@@ -48,11 +48,12 @@
     
     const sineSynth = new Tone.PolySynth();
     const squareSynth = new Tone.PolySynth();
-    const clickSampler = new Tone.Sampler({
+    const drumSampler = new Tone.Sampler({
       urls: {
-        "C3": "/click.mp3",
+        "C3": "/kick.mp3",
+        "C4": "/snare.mp3",
+        "C5": "/hat.mp3",
       },
-      release: 1,
       baseUrl: base,
     });
     
@@ -68,7 +69,7 @@
     });
     sineSynth.connect(Tone.getDestination());
     squareSynth.connect(Tone.getDestination());
-    clickSampler.connect(Tone.getDestination());
+    drumSampler.connect(Tone.getDestination());
     
     time = Tone.now();
 
@@ -76,13 +77,18 @@
       time = t;
       let notes = getFrequencies(t, measure * beatsPerMeasure + beat, measure, beat);
       if(Array.isArray(notes)) {
-        notes.forEach(n => {
-          if(n === 0)
-            clickSampler.triggerAttackRelease("C3", "16n")
-          else if(n > 0) {
-            sineSynth.triggerAttackRelease(clamp(n,1,MAX_FREQ), "8n"); 
+        notes.forEach(note => {
+          if(isDrum(note)) {
+            if(note > 0)
+              drumSampler.triggerAttackRelease("C5", "16n")
+            else if(note < 0)
+              drumSampler.triggerAttackRelease("C4", "16n")
+            else
+            drumSampler.triggerAttackRelease("C3", "16n")
+          } else if(note > 0) {
+            sineSynth.triggerAttackRelease(clamp(note,1,MAX_FREQ), "8n"); 
           } else {
-            squareSynth.triggerAttackRelease(clamp(Math.abs(n),1,MAX_FREQ), "8n"); 
+            squareSynth.triggerAttackRelease(clamp(Math.abs(note),1,MAX_FREQ), "8n"); 
           }
         });
       }
@@ -98,16 +104,22 @@
 
 	let getFrequencies;
   $: {
-		try {
-			getFrequencies = new Function('t', 'i', 'm', 'b', `
-			try { 
-        with (Math)
-          return [${code}].flat().splice(0,4).map(n => Number.parseFloat(n)).filter(n => n != null && !Number.isNaN(n));
-			} catch(error){
-				return [0];
-			}`);
-		} catch(error) {
-			getFrequencies = () => [0];
+    getFrequencies = (t,i,m,b) => {   
+      try {
+        const codeFunc = new Function('t', 'i', 'm', 'b', `
+          try { 
+            with (Math)
+              return [${code}];
+          } catch(error){
+            return [NaN];
+          }`);
+        return codeFunc(t,i,m,b).flat()
+          .splice(0,4)
+          .map(n => Number.parseFloat(n))
+          .filter(n => !isRest(n));
+        } catch(error) {
+          return [NaN];
+      }
 		}
 	}
 
@@ -121,7 +133,6 @@
     history.pushState(null, '', `?${query.toString()}`);
     
   }
-
   const loadFromURL = () => {
     if($page.url.searchParams.has("code"))
       code = $page.url.searchParams.get("code");
@@ -130,10 +141,12 @@
   }
   const scale = (x, o) => {
     const indicatorScale = Math.abs(o/(totalMeasures*beatsPerMeasure));
-    return x === 0 ? 
-      (2-expoOut(indicatorScale)**2)/1.75 :
+    return isDrum(x) ? 
+      (2-expoOut(indicatorScale)**2)/1.75 * (x===0?1:x>0?0.5:0.8) :
       expoIn(1-Math.abs(x / MAX_FREQ)) * (1-indicatorScale/2);
   }
+  const isRest = (frequency) => Number.isNaN(frequency) || frequency == null; 
+  const isDrum = (frequency) => frequency === 0 || !Number.isFinite(frequency);
 </script>
 
 <form class="controls">
@@ -151,7 +164,7 @@
       play
     {/if}
   </button>
-  <button disabled={measure+beat === 0 && !isPlaying} on:click|preventDefault={async () => {
+  <button disabled={measure+beat === 0 && !isPlaying} on:click|preventDefault={() => {
     Tone.Transport.stop();
     isPlaying = false;
     measure = beat = 0;
@@ -166,29 +179,33 @@
   </button>
 </form>
 
-<div class="container" style="--beats: {beatsPerMeasure}; --meausures: {totalMeasures}" on:click={() => exampleIndex = (exampleIndex + 1) % examples.length}>
+<div class="container" style="--beats: {beatsPerMeasure}; --meausures: {totalMeasures}" on:click={() => exampleIndex=Math.min(exampleIndex+1,examples.length-1)}>
   {#each { length: totalMeasures } as _, m}
     {#each { length: beatsPerMeasure } as _, b}
-      {@const current = measure * beatsPerMeasure + beat}
-      {@const offset = m * beatsPerMeasure + b}
-      {@const frequencies = getFrequencies(time+offset*0.25, offset, m, b).sort((a,b)=>b-a)}
-      <div class="beat" class:indicator={current === offset}>
-        {#each { length: frequencies.length || 0 } as _, f}
-          {#if frequencies[f] != null && !Number.isNaN(frequencies[f])}
-            <div class="note" class:overlay={f > 0} 
-              class:click={frequencies[f] === 0}
-              class:triangle={frequencies[f] < 0}
-              style="--index:{f}; --scale:{scale(frequencies[f], current-offset)};"/>
-          {:else}
-            <div class="note rest"></div>
-          {/if}
+      {@const now = measure * beatsPerMeasure + beat}
+      {@const index = m * beatsPerMeasure + b}
+      {@const notes = getFrequencies(time+(now-index)*0.25, index, m, b).sort((a,b)=>{
+        if(isDrum(a)) a=0;
+        if(isDrum(b)) b=0;
+        return b-a;
+      })}
+
+      <div class="beat" class:indicator={now === index}>
+        {#each { length: notes.length || 0 } as _, i}
+          {@const note = notes[i]}
+            <div class="note" class:overlay={i > 0} 
+              class:drum={isDrum(note)}
+              class:square={note < 0 && !isDrum(note)}
+              style="--index:{i}; --scale:{scale(notes[i], now-index)};"/>
+        {:else}
+          <div class="note rest"></div>
         {/each}
       </div>
 	  {/each}
 	{/each}
 </div>
 
-<form class="editor" on:submit|preventDefault={()=>{ saveToURL() }}>
+<form class="editor" on:submit|preventDefault={saveToURL}>
   <label for="code" class="comment focus-only">// hit `enter` to save your code in the URL</label>
   <label for="code" class="comment focus-only">// to learn more click on the dots above or <a href="{base}/about">here</a></label>
   {#each comments as line}
@@ -261,20 +278,20 @@
     margin: calc(var(--index) * 5px);
     opacity: 0.5;
   }
-  .note.triangle {
+  .note.square {
     background-color: red;
     border-color: red;
   }
-  .note.click {
+  .note.drum {
     background-color:blue;
     border-color: blue;
   }
-  .note.triangle.overlay,
-  .note.click.overlay {
+  .note.square.overlay,
+  .note.drum.overlay {
     opacity: 0.85;
   }
-  .note.triangle.overlay + .note.triangle.overlay,
-  .note.click.overlay + .note.click.overlay{
+  .note.square.overlay + .note.square.overlay,
+  .note.drum.overlay + .note.drum.overlay{
     opacity: 0.3;
   }
   .indicator > .note:not(.overlay) {

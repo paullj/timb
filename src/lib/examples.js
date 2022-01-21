@@ -33,7 +33,7 @@ const examples = [
   },
   {
     comments: ["`t` is for time", "and `i` is index (0-63)"],
-    code: "20 * (t % 100) * [0, 1, 2, 1][i % 4]",
+    code: "20 * (t % 100) * [1, 2, 3, 2][i % 4]",
   },
   {
     comments: [
@@ -83,6 +83,13 @@ const examples = [
       "eg. `b^0` is equivalent to `b!=0`, every byte counts!",
     ],
     code: "b^0?440:-220",
+  },
+  {
+    comments: [
+      "a few examples...",
+      "using random for more varied drum patterns",
+    ],
+    code: "[+(b%4^0&&random()>.2)*-90,-(m%3+1)*30*[1,2,3][b%3],[360][b%5]]",
   },
   {
     comments: ["now its your turn", "have fun!"],

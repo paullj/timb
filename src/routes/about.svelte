@@ -1,10 +1,12 @@
 <script context="module">
 	export const prerender = true;
+  export const router = false;
 </script>
 
 <p>
   create music in 64 bytes. heavily inspired by <a href="https://tixy.land">tixy.land</a>
 </p>
+
 <h2>
   // what does `f(b,i)` do?
 </h2>
