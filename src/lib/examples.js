@@ -21,7 +21,10 @@ const examples = [
     code: "-440",
   },
   {
-    comments: ["return 0 for a click", "this can be useful for drum rhythms"],
+    comments: [
+      "return 0 for a kick drum",
+      "infinity for hi hats and negative infinity for snare",
+    ],
     code: "0",
   },
   {
@@ -85,11 +88,22 @@ const examples = [
     code: "b^0?440:-220",
   },
   {
+    comments: [" more examples:", "a nice chord progression in c major"],
+    code: "[0,5,7,2].map(n=>[0,16,7,12].map(x=>f(131,n+x)))[[1][i%2]*m%4]",
+  },
+  {
     comments: [
-      "a few examples...",
-      "using random for more varied drum patterns",
+      "how about some drums?",
+      "`1/0` is equal to infinity, useful for hi-hats and snares",
     ],
-    code: "[+(b%4^0&&random()>.2)*-90,-(m%3+1)*30*[1,2,3][b%3],[360][b%5]]",
+    code: "[[,0][r(2+m%2,8)[b]],[-1/0][(b+2)%4],1/0,-10*(4+m%2)]",
+  },
+  {
+    comments: [
+      "you can use random to add probability to you music",
+      "combine it with logic operators to add variation to beats",
+    ],
+    code: "[(b%4^0&&random()>.1)*-90,-(m%3+1)*30*[1,2,3][b%3],[360][b%5]]",
   },
   {
     comments: ["now its your turn", "have fun!"],
