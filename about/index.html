@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/timb/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/timb/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/timb/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/timb/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+	<link rel="stylesheet" href="/timb/_app/assets/pages/__layout.svelte-aa309511.css">
+	<link rel="modulepreload" href="/timb/_app/start-0e82d273.js">
+	<link rel="modulepreload" href="/timb/_app/chunks/vendor-27084509.js">
+	<link rel="modulepreload" href="/timb/_app/chunks/paths-4b3c6e7e.js">
+	<link rel="modulepreload" href="/timb/_app/pages/__layout.svelte-02840968.js">
+	<link rel="modulepreload" href="/timb/_app/pages/about.svelte-9779972d.js">
+			<script type="module">
+				import { start } from "/timb/_app/start-0e82d273.js";
+				start({
+					target: document.querySelector("#svelte"),
+					paths: {"base":"/timb","assets":"/timb"},
+					session: {},
+					route: false,
+					spa: false,
+					trailing_slash: "never",
+					hydrate: {
+						status: 200,
+						error: null,
+						nodes: [
+							import("/timb/_app/pages/__layout.svelte-02840968.js"),
+						import("/timb/_app/pages/about.svelte-9779972d.js")
+						],
+						url: new URL("http://prerender/about"),
+						params: {}
+					}
+				});
+			</script>
+    <script
+      data-host="https://microanalytics.io"
+      data-dnt="false"
+      src="https://microanalytics.io/js/script.js"
+      id="ZwSg9rf6GA"
+      async
+      defer
+    ></script>
+  </head>
+  <body>
+    <noscript> You need javascript enabled to run this :( </noscript>
+    <div id="svelte">
+
+
+<div class="container svelte-4c70nc"><p>create music in 64 bytes. heavily inspired by <a href="https://tixy.land">tixy.land</a></p>
+<h2>// what does `f(b,i)` do?
+</h2>
+<p>`f(b,i)` allows you to write music in semitones, it returns a frequency given a base frequency and how many semitones difference you want
+</p>
+<h2>// what about `r(o,p)`?
+</h2>
+<p>`r(o,p)` helps build euclidean rhythm patterns. it spreads out `o` onsets across `p` pulses. it returns an array of 0 or 1 where 1 can be used as when a beat hits.
+  it can build very complex rhythms in a simple way.
+</p>
+<p>for example, the 13th century persian rhythm &#39;khafif-e-ramal&#39; below can be generated using r(2,5). coincidentally it is also the metric pattern from dave brubeck&#39;s take five and gustav holst&#39;s mars from the planets
+</p>
+<p>r(2,5)=[1,0,0,0] or |x...| in beat notation
+</p>
+<p>other examples: 
+</p>
+<ul><li>simple example
+    <br>
+    r(1,4) |x...|
+  </li>
+  <li>bulgarian folk rhythm &#39;ruchenitza&#39;. used in pink floyd&#39;s money
+    <br>
+    r(3,7) |x.x.x..|
+  </li>
+  <li>cuban tresillo pattern
+    <br>
+    r(3,8) |x . . x . . x .| 
+  </li>
+  <li>spanish tango when started on second offset 
+    <br>
+    r(5,8) |x . x x . x x .| 
+  </li>
+  <li>arabic rhythm &#39;agsag-samai&#39; and s. african drum pattern &#39;venda&#39;
+    <br>
+    r(5,9) [x . x . x . x . x]
+  </li>
+  <li>bossa-nova rhythm necklace of brazil
+    <br>
+    r(5,16) x . . x . . x . . x . . x . . . .] 
+  </li></ul>
+<p>you can read more about it <a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf">here</a></p>
+  <footer class="footer svelte-4c70nc">made by <a href="https://github.com/paullj">paullj</a>.
+    inspired by <a href="https://tixy.land">tixy.land</a></footer></div>
+
+<head><title>timb(re) - musical creative coding</title>
+</head>
+
+</div>
+  </body>
+</html>
