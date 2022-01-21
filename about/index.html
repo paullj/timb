@@ -24,15 +24,17 @@
     />
     <link rel="manifest" href="/timb/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    
-	<link rel="stylesheet" href="/timb/_app/assets/pages/__layout.svelte-97e81d16.css">
-	<link rel="modulepreload" href="/timb/_app/start-ee1bf439.js">
-	<link rel="modulepreload" href="/timb/_app/chunks/vendor-27084509.js">
+    <title>
+    timb(re) - 64 byte beats
+  </title>
+	<link rel="stylesheet" href="/timb/_app/assets/pages/__layout.svelte-5bd76ea1.css">
+	<link rel="modulepreload" href="/timb/_app/start-b52974fa.js">
+	<link rel="modulepreload" href="/timb/_app/chunks/vendor-cba33907.js">
 	<link rel="modulepreload" href="/timb/_app/chunks/paths-4b3c6e7e.js">
-	<link rel="modulepreload" href="/timb/_app/pages/__layout.svelte-02840968.js">
-	<link rel="modulepreload" href="/timb/_app/pages/about.svelte-242eea46.js">
+	<link rel="modulepreload" href="/timb/_app/pages/__layout.svelte-a38e7ce3.js">
+	<link rel="modulepreload" href="/timb/_app/pages/about.svelte-ebe02cde.js">
 			<script type="module">
-				import { start } from "/timb/_app/start-ee1bf439.js";
+				import { start } from "/timb/_app/start-b52974fa.js";
 				start({
 					target: document.querySelector("#svelte"),
 					paths: {"base":"/timb","assets":"/timb"},
@@ -44,8 +46,8 @@
 						status: 200,
 						error: null,
 						nodes: [
-							import("/timb/_app/pages/__layout.svelte-02840968.js"),
-						import("/timb/_app/pages/about.svelte-242eea46.js")
+							import("/timb/_app/pages/__layout.svelte-a38e7ce3.js"),
+						import("/timb/_app/pages/about.svelte-ebe02cde.js")
 						],
 						url: new URL("http://prerender/about"),
 						params: {}
@@ -66,12 +68,26 @@
     <div id="svelte">
 
 
-<div class="container svelte-4c70nc"><p>create music in 64 bytes. heavily inspired by <a href="https://tixy.land">tixy.land</a></p>
+<div class="container svelte-5zepfw"><div></div>
+  <div><h2>// how do i make a sound?
+</h2>
+<p>return a number or an array of numbers to make a sound. depending on the value of the number returned one of 5 instruments will be played:
+</p>
+<ul><li>sine wave synth. 1 to 10000</li>
+  <li>square wave synth. 1 to -10000</li>
+  <li>kick drum. 0</li>
+  <li>hi-hat. infinity</li>
+  <li>snare drum. -infinity</li>
+  <li>sine synth. NaN or undefined</li></ul>
 
 <h2>// what does `f(b,i)` do?
 </h2>
-<p>`f(b,i)` allows you to write music in semitones, it returns a frequency given a base frequency and how many semitones difference you want
+<p>`f(b,i)` allows you to write music in semitones, it returns a frequency given a base frequency and how many semitones difference you want.
 </p>
+<p><a href="https://en.wikipedia.org/wiki/Piano_key_frequencies" rel="opener">here</a> is a useful list of frequencies that correspond to keys on a piano
+</p> 
+
+
 <h2>// what about `r(o,p)`?
 </h2>
 <p>`r(o,p)` helps build euclidean rhythm patterns. it spreads out `o` onsets across `p` pulses. it returns an array of 0 or 1 where 1 can be used as when a beat hits.
@@ -101,18 +117,17 @@
   </li>
   <li>arabic rhythm &#39;agsag-samai&#39; and s. african drum pattern &#39;venda&#39;
     <br>
-    r(5,9) [x . x . x . x . x]
+    r(5,9) |x . x . x . x . x|
   </li>
   <li>bossa-nova rhythm necklace of brazil
     <br>
-    r(5,16) x . . x . . x . . x . . x . . . .] 
+    r(5,16) |x . . x . . x . . x . . x . . . .|
   </li></ul>
-<p>you can read more about it <a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf">here</a></p>
-  <footer class="footer svelte-4c70nc">made by <a href="https://github.com/paullj">paullj</a>.
-    inspired by <a href="https://tixy.land">tixy.land</a></footer></div>
+<p>you can read more about it <a href="http://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf">here</a></p></div>
+  <footer class="footer svelte-5zepfw">made by <a href="https://github.com/paullj" class="svelte-5zepfw">paullj</a>.
+    heavily inspired by <a href="https://tixy.land" class="svelte-5zepfw">tixy.land</a></footer></div>
 
-<head><title>timb(re) - musical creative coding</title>
-</head>
+
 
 </div>
   </body>
