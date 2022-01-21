@@ -15,8 +15,8 @@ const examples = [
   },
   {
     comments: [
-      "frequencies greater than 0 use a sine wave",
-      "while negative frequencies use a square wave",
+      "frequencies greater than 0 play a sine wave",
+      "while negative frequencies play a square wave",
     ],
     code: "-440",
   },
@@ -61,8 +61,8 @@ const examples = [
   },
   {
     comments: [
-      "`r(o,p)` gives euclidean rhythm patterns as arrays of 1s & 0s",
-      "it spreads out `o` onsets across `p` pulses`",
+      "`r(o,p)` returns euclidean rhythms as an array of 0s and 1s",
+      "it spreads out `o` onsets across `p` pulses (more on /about)",
     ],
     code: "[NaN, 0][r(3, 8)[b]]",
   },
@@ -100,7 +100,7 @@ const examples = [
   },
   {
     comments: [
-      "you can use random to add probability to you music",
+      "you can use `random()` to add probability to you music",
       "combine it with logic operators to add variation to beats",
     ],
     code: "[(b%4^0&&random()>.1)*-90,-(m%3+1)*30*[1,2,3][b%3],[360][b%5]]",
