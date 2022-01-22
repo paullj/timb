@@ -5,6 +5,7 @@
   import examples from '$lib/examples';
   import { base } from '$app/paths';
   import { page } from '$app/stores'
+  import { Kick, HiHat, Snare } from '$lib/instruments';
 
   const MAX_FREQ = 10000;
 
@@ -49,30 +50,36 @@
       return pattern;
     }
     
-    const sineSynth = new Tone.PolySynth();
-    const squareSynth = new Tone.PolySynth();
-    const drumSampler = new Tone.Sampler({
-      urls: {
-        "C3": "/kick.mp3",
-        "C4": "/snare.mp3",
-        "C5": "/hat.mp3",
-      },
-      baseUrl: base,
-    });
+    const hardLeft = new Tone.Panner(-0.7);
+    const centreLeft = new Tone.Panner(-0.2);
+    const centreRight = new Tone.Panner(0.2);
+    const hardRight = new Tone.Panner(0.7);
     
-    squareSynth.set({
-      oscillator: { type: "sine"},
-      envelope: { attack: 0.2, decay: 0.5, release: 1 }
+    const kick = new Kick().connect(Tone.getDestination());
+    const hats = new HiHat().connect(hardLeft);;
+    const snare = new Snare().connect(hardRight);
+
+    const triangleSynth = new Tone.PolySynth().connect(centreLeft);
+    triangleSynth.set({
+      volume: -8,
+      envelope: { 
+        attack: 0.1,
+        decay: 0.4,
+        release: 1 
+      }
     });
-    squareSynth.set({
+
+    const sawtoothSynth = new Tone.PolySynth().connect(centreRight);
+    sawtoothSynth.set({
       detune: 0.1,
-      volume: Tone.gainToDb(0.2),
-      oscillator: { type: "square"},
-      envelope: { attack: 0.05, decay: 0.1 }
+      volume: -16,
+      oscillator: { type: "sawtooth"},
+      envelope: { attack: 0.1, decay: 0.1 }
     });
-    sineSynth.connect(Tone.getDestination());
-    squareSynth.connect(Tone.getDestination());
-    drumSampler.connect(Tone.getDestination());
+    centreLeft.connect(Tone.getDestination());
+    centreRight.connect(Tone.getDestination());
+    hardLeft.connect(Tone.getDestination());
+    hardRight.connect(Tone.getDestination());
     
     time = Tone.now();
 
@@ -83,15 +90,15 @@
         notes.forEach(note => {
           if(isDrum(note)) {
             if(note > 0)
-              drumSampler.triggerAttackRelease("C5", "16n")
-            else if(note < 0)
-              drumSampler.triggerAttackRelease("C4", "16n")
-            else
-            drumSampler.triggerAttackRelease("C3", "16n")
+              hats.trigger("+0.1");
+            else if(note < 0){
+              snare.trigger("+0.1");
+            } else
+              kick.trigger("+0.1");
           } else if(note > 0) {
-            sineSynth.triggerAttackRelease(clamp(note,1,MAX_FREQ), "8n"); 
+            triangleSynth.triggerAttackRelease(clamp(note,1,MAX_FREQ), "8n", "+0.1"); 
           } else {
-            squareSynth.triggerAttackRelease(clamp(Math.abs(note),1,MAX_FREQ), "8n"); 
+            sawtoothSynth.triggerAttackRelease(clamp(Math.abs(note),1,MAX_FREQ), "8n", "+0.1"); 
           }
         });
       }
@@ -157,9 +164,9 @@
     if(!hasStarted) {
       await Tone.start();
       hasStarted = true;
-      console.log('Audio is ready!');
     }
-    isPlaying = Tone.Transport.toggle().state === 'started'
+    Tone.Transport.toggle("+0.1");
+    isPlaying = !isPlaying;
   }}>
     {#if isPlaying}
       pause
@@ -197,8 +204,8 @@
         {#each { length: notes.length || 0 } as _, i}
           {@const note = notes[i]}
             <div class="note" class:overlay={i > 0} 
-              class:drum={isDrum(note)}
-              class:square={note < 0 && !isDrum(note)}
+              class:blue={isDrum(note)}
+              class:red={note < 0 && !isDrum(note)}
               style="--index:{i}; --scale:{scale(notes[i], now-index)};"/>
         {:else}
           <div class="note rest"></div>
@@ -281,20 +288,20 @@
     margin: calc(var(--index) * 5px);
     opacity: 0.5;
   }
-  .note.square {
+  .note.red {
     background-color: red;
     border-color: red;
   }
-  .note.drum {
+  .note.blue {
     background-color:blue;
     border-color: blue;
   }
-  .note.square.overlay,
-  .note.drum.overlay {
+  .note.red.overlay,
+  .note.blue.overlay {
     opacity: 0.85;
   }
-  .note.square.overlay + .note.square.overlay,
-  .note.drum.overlay + .note.drum.overlay{
+  .note.red.overlay + .note.red.overlay,
+  .note.blue.overlay + .note.blue.overlay{
     opacity: 0.3;
   }
   .indicator > .note:not(.overlay) {

@@ -8,6 +8,7 @@
     "tiny tunes",
     "64 byte beats",
     "♪ ♫",
+    "quality of a tone or sound",
     "code your next masterpiece"
   ];
 </script>

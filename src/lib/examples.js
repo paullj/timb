@@ -15,8 +15,8 @@ const examples = [
   },
   {
     comments: [
-      "frequencies greater than 0 play a sine wave",
-      "while negative frequencies play a square wave",
+      "frequencies greater than 0 play a triangle wave",
+      "while negative frequencies play a sawtooth wave",
     ],
     code: "-440",
   },
@@ -36,7 +36,7 @@ const examples = [
   },
   {
     comments: ["`t` is for time", "and `i` is index (0-63)"],
-    code: "20 * (t % 100) * [1, 2, 3, 2][i % 4]",
+    code: "20 * (t % 50) * [1, 2, 3, 2][i % 4]",
   },
   {
     comments: [
